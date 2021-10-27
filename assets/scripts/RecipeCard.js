@@ -1,7 +1,8 @@
 class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
-
+    super();
+    let shadow = this.attachShadow({mode: 'open'});
     // You'll want to attach the shadow DOM here
   }
 
@@ -87,7 +88,8 @@ class RecipeCard extends HTMLElement {
 
     // Here's the root element that you'll want to attach all of your other elements to
     const card = document.createElement('article');
-
+    card.setAttribute('class', 'recipe-card');
+  
     // Some functions that will be helpful here:
     //    document.createElement()
     //    document.querySelector()
@@ -98,8 +100,67 @@ class RecipeCard extends HTMLElement {
 
     // Make sure to attach your root element and styles to the shadow DOM you
     // created in the constructor()
+    shadow.appendChild(styleElem);
+    shadow.appendChild(card);
 
     // Part 1 Expose - TODO
+    //Add the recipe card to the DOM
+    document.body.appendChild(card);
+
+    //Add image to the card
+    let img = document.createElement('img');
+    img.setAttribute('src', data.image);
+    card.appendChild(img);
+
+    //Add title to the card
+    let title = document.createElement('p');
+    title.classList.add('title');
+    title.innerHTML = data.title;
+    card.appendChild(title);
+
+    //Add ingredients to the card
+    let ingredients = document.createElement('p');
+    ingredients.classList.add('ingredients');
+    ingredients.innerHTML = createIngredientList(data.ingredients);
+    card.appendChild(ingredients);
+
+    //Add organization to the card
+    let organization = document.createElement('p');
+    organization.classList.add('organization');
+    organization.innerHTML = getOrganization(data);
+    card.appendChild(organization);
+
+    //Add rating to the card
+    let rating = document.createElement('div');
+    rating.classList.add('rating');
+    rating.appendChild(createRating(data.rating));
+    card.appendChild(rating);
+
+    //Add rating image to the card
+    let star = document.createElement('img');
+    star.setAttribute('src', 'https://img.icons8.com/ios/50/000000/star.png');
+    rating.appendChild(star);
+
+    //Add rating number to the card
+    let ratingNum = document.createElement('span');
+    ratingNum.innerHTML = data.rating;
+    rating.appendChild(ratingNum);
+
+    //Add time to the card
+    let time = document.createElement('time');
+    time.innerHTML = convertTime(data.time);
+    card.appendChild(time);
+
+    //Add link to the title
+    let link = document.createElement('a');
+    link.setAttribute('href', getUrl(data));
+    link.innerHTML = 'View Recipe';
+    title.appendChild(link);
+
+    //Add totalReviews to title
+    let totalReviews = document.createElement('span');
+    totalReviews.innerHTML = '(' + data.totalReviews + ')';
+    title.appendChild(totalReviews);
   }
 }
 
