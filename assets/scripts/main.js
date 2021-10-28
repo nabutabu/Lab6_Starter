@@ -2,7 +2,7 @@
 
 // Here is where the recipes that you will fetch.
 // Feel free to add your own here for part 2, if they are local files simply add their path as a string.
-const recipes = [
+let recipes = [
   'https://introweb.tech/assets/json/ghostCookies.json',
   'https://introweb.tech/assets/json/birthdayCake.json',
   'https://introweb.tech/assets/json/chocolateChip.json'
@@ -46,15 +46,29 @@ async function fetchRecipes() {
     // This function should simply loop through the recipes array and fetch all of the data, store that data in the recipeData object, then resolve(true) when it does. If an error occurred, it should reject(false)
     for (let i = 0; i < recipes.length; i++) {
       fetch(recipes[i])
-        .then(response => response.json())
-        .catch(error => reject(false))
-        .then(data => {
-          recipeData[recipes[i]] = data;
+        .then(response => {
+          if(response.ok) {
+            return response.json();
+          } else {
+            throw new Error('Network response was not ok');
+          }
         })
-        .catch(err => reject(false));
+        .then((responseJson) => {
+          console.log(recipes[i]);
+          recipeData[recipes[i]] = responseJson;
+          console.log(recipeData[recipes[i]]);
+        })
+        .catch(err => {
+          console.log(err + "error encountered at " + recipes[i]);
+          reject(false);
+        })
+        .catch(err => {
+          console.log(err + "error encountered at " + recipes[i]);
+          reject(false);
+        });
     }
 
-    if(recipeData.length === recipes.length) {
+    if (Object.keys(recipeData).length === recipes.length) {
       resolve(true);
     } else {
       reject(false);
@@ -68,11 +82,16 @@ function createRecipeCards() {
   // From within this function you can access the recipe data from the JSON 
   // files with the recipeData Object above. Make sure you only display the 
   // three recipes we give you, you'll use the bindShowMore() function to
-  // show any others you've added when the user clicks on the "Show more" button.
+  // eshow any others you've added when the user clicks on the "Show more" button.
 
   // Part 1 Expose - TODO
-  element = document.getElementById('recipe-cards');
-  element.data = recipeData;
+  // This function should create three recipe cards, and add them to the page.
+  for (let i = 0; i < 3; i++) {
+    let recipeCard = document.createElement('recipe-card');
+    recipeCard.data = recipeData[recipes[i]];
+    let main = document.getElementsByName('main')[0];
+    main.appendChild(recipeCard);
+  }
 }
 
 function bindShowMore() {

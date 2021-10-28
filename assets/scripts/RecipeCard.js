@@ -2,7 +2,7 @@ class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
     super();
-    let shadow = this.attachShadow({mode: 'open'});
+    this.shadow = this.attachShadow({mode: 'open'});
     // You'll want to attach the shadow DOM here
   }
 
@@ -84,7 +84,7 @@ class RecipeCard extends HTMLElement {
         font-size: 12px;
       }
     `;
-    styleElem.innerHTML = style;
+    styleElem.innerHTML = styles;
 
     // Here's the root element that you'll want to attach all of your other elements to
     const card = document.createElement('article');
@@ -100,8 +100,8 @@ class RecipeCard extends HTMLElement {
 
     // Make sure to attach your root element and styles to the shadow DOM you
     // created in the constructor()
-    shadow.appendChild(styleElem);
-    shadow.appendChild(card);
+    this.shadow.appendChild(styleElem);
+    this.shadow.appendChild(card);
 
     // Part 1 Expose - TODO
     //Add the recipe card to the DOM
@@ -109,7 +109,11 @@ class RecipeCard extends HTMLElement {
 
     //Add image to the card
     let img = document.createElement('img');
-    img.setAttribute('src', data.image);
+    if (data.image) {
+      img.setAttribute('src', data.image);
+    } else {
+      img.setAttribute('src', 'https://via.placeholder.com/178x118');
+    }
     card.appendChild(img);
 
     //Add title to the card
