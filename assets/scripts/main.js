@@ -47,33 +47,21 @@ async function fetchRecipes() {
     for (let i = 0; i < recipes.length; i++) {
       fetch(recipes[i])
         .then(response => {
-          if(response.ok) {
-            return response.json();
-          } else {
-            throw new Error('Network response was not ok');
-          }
+          return response.json();
         })
         .then((responseJson) => {
-          console.log(recipes[i]);
           recipeData[recipes[i]] = responseJson;
           console.log(recipeData[recipes[i]]);
-        })
-        .catch(err => {
-          console.log(err + "error encountered at " + recipes[i]);
-          reject(false);
+
+        if (Object.keys(recipeData).length === recipes.length) {
+          resolve(true);
+        }
         })
         .catch(err => {
           console.log(err + "error encountered at " + recipes[i]);
           reject(false);
         });
     }
-
-    if (Object.keys(recipeData).length === recipes.length) {
-      resolve(true);
-    } else {
-      reject(false);
-    }
-
   });
 }
 
@@ -87,10 +75,10 @@ function createRecipeCards() {
   // Part 1 Expose - TODO
   // This function should create three recipe cards, and add them to the page.
   for (let i = 0; i < 3; i++) {
-    let recipeCard = document.createElement('recipe-card');
-    recipeCard.data = recipeData[recipes[i]];
-    let main = document.getElementsByName('main')[0];
-    main.appendChild(recipeCard);
+    let recipeCard = document.createElement('recipe-card'); //create recipe card
+    recipeCard.data = recipeData[recipes[i]]; //set recipe card data
+    let main = document.getElementsByTagName('main')[0]; //get main element
+    main.appendChild(recipeCard) //append recipe card to main element
   }
 }
 

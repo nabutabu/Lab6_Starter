@@ -2,8 +2,9 @@ class RecipeCard extends HTMLElement {
   constructor() {
     // Part 1 Expose - TODO
     super();
-    this.shadow = this.attachShadow({mode: 'open'});
     // You'll want to attach the shadow DOM here
+    // let shadow = this.attachShadow({ mode: 'open' });
+    this.shadow = this.attachShadow({mode: 'open'});
   }
 
   set data(data) {
@@ -88,7 +89,6 @@ class RecipeCard extends HTMLElement {
 
     // Here's the root element that you'll want to attach all of your other elements to
     const card = document.createElement('article');
-    card.setAttribute('class', 'recipe-card');
   
     // Some functions that will be helpful here:
     //    document.createElement()
@@ -105,28 +105,23 @@ class RecipeCard extends HTMLElement {
 
     // Part 1 Expose - TODO
     //Add the recipe card to the DOM
-    document.body.appendChild(card);
 
     //Add image to the card
     let img = document.createElement('img');
-    if (data.image) {
-      img.setAttribute('src', data.image);
-    } else {
-      img.setAttribute('src', 'https://via.placeholder.com/178x118');
-    }
+    img.setAttribute('src', searchForKey(data, 'thumbnailUrl'));
+    img.setAttribute('alt', 'Recipe Image');
     card.appendChild(img);
 
     //Add title to the card
     let title = document.createElement('p');
     title.classList.add('title');
-    title.innerHTML = data.title;
     card.appendChild(title);
 
-    //Add ingredients to the card
-    let ingredients = document.createElement('p');
-    ingredients.classList.add('ingredients');
-    ingredients.innerHTML = createIngredientList(data.ingredients);
-    card.appendChild(ingredients);
+    //Add link to the title
+    let link = document.createElement('a');
+    link.setAttribute('href', getUrl(data));
+    link.innerHTML = searchForKey(data, 'name');
+    title.appendChild(link);
 
     //Add organization to the card
     let organization = document.createElement('p');
@@ -135,36 +130,45 @@ class RecipeCard extends HTMLElement {
     card.appendChild(organization);
 
     //Add rating to the card
-    let rating = document.createElement('div');
-    rating.classList.add('rating');
-    rating.appendChild(createRating(data.rating));
-    card.appendChild(rating);
+    if (searchForKey(data, 'ratingCount')) {
+      let rating = document.createElement('div');
+      rating.classList.add('rating');
+      let ratingValue = searchForKey(data, 'ratingValue');
+      let ratingNum = Math.round(ratingValue);
 
-    //Add rating image to the card
-    let star = document.createElement('img');
-    star.setAttribute('src', 'https://img.icons8.com/ios/50/000000/star.png');
-    rating.appendChild(star);
+      //Add rating num to the card
+      let ratingNumElem = document.createElement('span');
+      ratingNumElem.innerHTML = ratingValue;
+      rating.appendChild(ratingNumElem);
 
-    //Add rating number to the card
-    let ratingNum = document.createElement('span');
-    ratingNum.innerHTML = data.rating;
-    rating.appendChild(ratingNum);
+      //Add rating image to the card
+      let star = document.createElement('img');
+      star.setAttribute('src', '/assets/images/icons/'+ ratingNum +'-star.svg');
+      rating.appendChild(star);
+
+      //Add rating number to the card
+      let numRatings = document.createElement('span');
+      numRatings.innerHTML = '(' + searchForKey(data, 'ratingCount') + ')';
+      rating.appendChild(numRatings);
+      card.appendChild(rating);
+    } else {
+      let rating = document.createElement('div');
+      let zeroReveiws = document.createElement('span');
+      zeroReveiws.innerHTML = 'No Reviews';
+      rating.appendChild(zeroReveiws);
+      card.appendChild(rating);
+    }
 
     //Add time to the card
     let time = document.createElement('time');
-    time.innerHTML = convertTime(data.time);
+    time.innerHTML = convertTime(searchForKey(data, 'totalTime'));
     card.appendChild(time);
 
-    //Add link to the title
-    let link = document.createElement('a');
-    link.setAttribute('href', getUrl(data));
-    link.innerHTML = 'View Recipe';
-    title.appendChild(link);
-
-    //Add totalReviews to title
-    let totalReviews = document.createElement('span');
-    totalReviews.innerHTML = '(' + data.totalReviews + ')';
-    title.appendChild(totalReviews);
+    //Add ingredients to the card
+    let ingredients = document.createElement('p');
+    ingredients.classList.add('ingredients');
+    ingredients.innerHTML = createIngredientList(searchForKey(data, 'recipeIngredient'));
+    card.appendChild(ingredients);
   }
 }
 
