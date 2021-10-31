@@ -119,14 +119,24 @@ class RecipeCard extends HTMLElement {
 
     //Add link to the title
     let link = document.createElement('a');
-    link.setAttribute('href', getUrl(data));
+    let linkUrl = getUrl(data);
+    // For part 2, some of the data is formatted differently. This is a workaround.
+    if(linkUrl == null){
+      linkUrl = searchForKey(data, 'url');
+    }
+    link.setAttribute('href', linkUrl);
     link.innerHTML = searchForKey(data, 'name');
     title.appendChild(link);
 
     //Add organization to the card
     let organization = document.createElement('p');
     organization.classList.add('organization');
-    organization.innerHTML = getOrganization(data);
+    let organizationName = getOrganization(data);
+    // For part 2, some of the data is formatted differently. This is a workaround.
+    if(organizationName == null){
+      organizationName = searchForKey(data, 'name');
+    }
+    organization.innerHTML = organizationName;
     card.appendChild(organization);
 
     //Add rating to the card
@@ -138,12 +148,15 @@ class RecipeCard extends HTMLElement {
 
       //Add rating num to the card
       let ratingNumElem = document.createElement('span');
+      if(typeof ratingValue == 'number' ){ //rounds rating to second decimal
+        ratingValue = ratingValue.toFixed(2);
+      }
       ratingNumElem.innerHTML = ratingValue;
       rating.appendChild(ratingNumElem);
 
       //Add rating image to the card
       let star = document.createElement('img');
-      star.setAttribute('src', '/assets/images/icons/'+ ratingNum +'-star.svg');
+      star.setAttribute('src', 'assets/images/icons/'+ ratingNum +'-star.svg');
       rating.appendChild(star);
 
       //Add rating number to the card

@@ -5,7 +5,10 @@
 let recipes = [
   'https://introweb.tech/assets/json/ghostCookies.json',
   'https://introweb.tech/assets/json/birthdayCake.json',
-  'https://introweb.tech/assets/json/chocolateChip.json'
+  'https://introweb.tech/assets/json/chocolateChip.json',
+  'assets/recipes/fish.json',
+  'assets/recipes/garlic-noodles.json',
+  'assets/recipes/pumpkin-brownie.json',
 ];
 
 // Once all of the recipes that were specified above have been fetched, their
@@ -91,4 +94,23 @@ function bindShowMore() {
   // in the recipeData object where you stored them/
 
   // Part 2 Explore - TODO
+  let buttonWrapper = document.querySelector('#button-wrapper');
+  let actualButton = document.querySelector('button');
+  let main = document.getElementsByTagName('main')[0]; //get main element
+  buttonWrapper.addEventListener('click', (event)=>{
+    buttonWrapper.classList.toggle("showCards");
+    if(buttonWrapper.classList.contains("showCards")){
+      actualButton.innerText = 'Show Less';
+      for (let i = 3; i < 6; i++) {
+        let recipeCard = document.createElement('recipe-card'); //create recipe card
+        recipeCard.data = recipeData[recipes[i]]; //set recipe card data
+        main.appendChild(recipeCard) //append recipe card to main element
+      }
+    }else{
+      actualButton.innerText = 'Show More';
+      for(let i = 0; i < 3; i ++){
+        main.removeChild(main.lastElementChild);
+      }
+    }
+  })
 }
